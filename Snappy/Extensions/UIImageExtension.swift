@@ -23,4 +23,15 @@ extension UIImage {
         
         return imageFromContext ?? UIImage()
     }
+    
+    func resized(newSize: CGSize) -> UIImage {
+        guard size != newSize else { return self }
+        
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+        draw(in: CGRect(origin: .zero, size: newSize))
+        let imageFromContext = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return imageFromContext ?? UIImage()
+    }
 }

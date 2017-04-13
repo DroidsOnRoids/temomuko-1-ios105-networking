@@ -94,8 +94,12 @@ class PreviewViewController: UIViewController {
         guard let image = previewImageView.image?.fixImageOrientation() else { return }
         
         let croppedImage = crop(image: image)
+        let sizeRatio = croppedImage.size.height / croppedImage.size.width
+        let maxSize: CGFloat = 1000.0
+        let newSize = CGSize(width: maxSize / sizeRatio, height: maxSize)
+        let scaledImage = croppedImage.resized(newSize: newSize)
         
-        let endpoint = Endpoint.uploadPhoto(image: croppedImage, fromUserId: 1, toUserId: nil)
+        let endpoint = Endpoint.uploadPhoto(image: scaledImage, fromUserId: 1, toUserId: nil)
         
         sender.isEnabled = false
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
