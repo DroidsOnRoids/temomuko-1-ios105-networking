@@ -89,4 +89,20 @@ class PreviewViewController: UIViewController {
     @IBAction private func closeButtonAction(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
+    
+    @IBAction func sendButtonAction(_ sender: UIButton) {
+        guard let image = previewImageView.image?.fixImageOrientation() else { return }
+        
+        let croppedImage = crop(image: image)
+        
+        let endpoint = Endpoint.uploadPhoto(image: croppedImage, fromUserId: 1, toUserId: nil)
+        
+        sender.isEnabled = false
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        API.request(endpoint) { success in
+            sender.isEnabled = true
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            print("Upload success: \(success)")
+        }
+    }
 }
