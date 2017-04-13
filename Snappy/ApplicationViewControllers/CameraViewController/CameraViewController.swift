@@ -118,9 +118,8 @@ class CameraViewController: UIViewController {
         videoConnection.videoOrientation = AVCaptureVideoOrientation.portrait
         imageOutput.captureStillImageAsynchronously(from: videoConnection) { (dataBuffer, error) in
             
-            guard let buffer = dataBuffer else { return }
-            let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(buffer)
-            let provider = CGDataProvider(data: imageData as! CFData)
+            guard let buffer = dataBuffer, let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(buffer) else { return }
+            let provider = CGDataProvider(data: imageData as CFData)
             let cgImage = CGImage(jpegDataProviderSource: provider!, decode: nil, shouldInterpolate: true, intent: CGColorRenderingIntent.defaultIntent)
             let image = UIImage(cgImage: cgImage!, scale: 1.0, orientation:  self.isSelfieCameraEnabled ? UIImageOrientation.leftMirrored : UIImageOrientation.right)
             self.showPreviewWith(image: image)
