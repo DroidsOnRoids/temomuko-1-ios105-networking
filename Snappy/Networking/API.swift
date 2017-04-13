@@ -52,7 +52,7 @@ final class API {
     
     static let baseURL = URL(string: "https://snappyapp.herokuapp.com/images/")
     
-    class func request(_ endpoint: Endpoint, completion: ((Bool) -> Void)) {
+    class func request(_ endpoint: Endpoint, completion: @escaping ((Bool) -> Void)) {
         guard let url = URL(string: endpoint.url, relativeTo: API.baseURL) else { fatalError() }
         
         switch endpoint {
@@ -61,13 +61,28 @@ final class API {
                 switch encodingResult {
                 case .success(let request, _, _):
                     print("Encoding success")
+                    
+                    request.responseJSON { json in
+                        switch json.result {
+                        case .success(let value):
+                            print("Response success: \(value)")
+                            let dict = value as? [String: Any]
+                            completion(dict?["error"] == nil)
+                            
+                        case .failure(let error):
+                            print("Response failure: \(error.localizedDescription)")
+                            completion(false)
+                        }
+                    }
+                    
                 case .failure(let error):
                     print("Encoding failure: \(error.localizedDescription)")
                 }
             }
             
         default:
-            break
+            let request = try! URLRequest(url: url, method: endpoint.method)
+            Alamofire.request(request).responseJSON { _ in }
         }
     }
 }
