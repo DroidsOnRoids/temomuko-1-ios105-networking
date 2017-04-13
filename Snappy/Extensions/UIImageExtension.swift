@@ -9,6 +9,10 @@
 import UIKit
 
 extension UIImage {
+    var data: Data? {
+        return UIImageJPEGRepresentation(self, 0.8)
+    }
+    
     func fixImageOrientation() -> UIImage {
         guard imageOrientation != .up else { return self }
         
