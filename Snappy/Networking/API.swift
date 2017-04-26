@@ -77,6 +77,7 @@ final class API {
                     
                 case .failure(let error):
                     print("Encoding failure: \(error.localizedDescription)")
+                    completion(false)
                 }
             }
             
